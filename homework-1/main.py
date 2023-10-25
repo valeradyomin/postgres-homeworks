@@ -9,6 +9,13 @@ mypass = os.getenv("PSQL_PSW")
 
 
 def load_from_csv(filename):
+    """
+    Загружает данные из CSV-файла в список кортежей.
+    Args:
+        filename (str): Имя CSV-файла.
+    Returns:
+        list: Список кортежей с данными из CSV-файла.
+    """
     path_to_csv = os.path.join("..", "homework-1", "north_data", filename)
     try:
         with open(path_to_csv, newline="", encoding="UTF-8") as csvfile:
@@ -19,6 +26,9 @@ def load_from_csv(filename):
 
 
 def main():
+    """
+    Заполняет таблицы в БД Postgres данными из CSV-файлов.
+    """
     conn = psycopg2.connect(host="localhost", database="north", user="postgres", password=mypass)
     try:
         with conn:
