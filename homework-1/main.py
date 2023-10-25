@@ -1,17 +1,18 @@
 """Скрипт для заполнения данными таблиц в БД Postgres."""
+import csv
+import os
 import psycopg2
+from dotenv import load_dotenv
 
-# release connection to database
-conn = psycopg2.connect(host="localhost", database="north", user="postgres", password="1739")
-try:
-    with conn:
-        with conn.cursor() as cur:
-            cur.execute("INSERT INTO customers VALUES (%s, %s, %s)", ('ALFKI', 'Alfreds Futterkiste', 'Maria Anders'))
-            cur.execute("SELECT * FROM customers")
+load_dotenv()
+mypass = os.getenv("PSQL_PSW")
 
-            # print results
-            rows = cur.fetchall()
-            for row in rows:
-                print(row)
-finally:
-    conn.close()
+
+def load_from_csv(filename):
+    path_to_csv = os.path.join("..", "homework-1", "north_data", filename)
+    try:
+        with open(path_to_csv, newline="", encoding="UTF-8") as csvfile:
+            reader = csv.DictReader(csvfile)
+            return [tuple(row.values()) for row in reader]
+    except FileNotFoundError:
+        print(f"Отсутствует файл {filename}")
