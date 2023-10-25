@@ -16,3 +16,34 @@ def load_from_csv(filename):
             return [tuple(row.values()) for row in reader]
     except FileNotFoundError:
         print(f"Отсутствует файл {filename}")
+
+
+def main():
+    conn = psycopg2.connect(host="localhost", database="north", user="postgres", password=mypass)
+    try:
+        with conn:
+            with conn.cursor() as cur:
+                cur.executemany("INSERT INTO customers VALUES (%s, %s, %s)", load_from_csv("customers_data.csv"))
+                cur.execute("SELECT * FROM customers")
+                rows = cur.fetchall()
+                for row in rows:
+                    print(row)
+
+                cur.executemany(
+                    "INSERT INTO employees VALUES (%s, %s, %s, %s, %s, %s)", load_from_csv("employees_data.csv"))
+                cur.execute("SELECT * FROM employees")
+                rows = cur.fetchall()
+                for row in rows:
+                    print(row)
+
+                cur.executemany("INSERT INTO orders VALUES (%s, %s, %s, %s, %s)", load_from_csv("orders_data.csv"))
+                cur.execute("SELECT * FROM orders")
+                rows = cur.fetchall()
+                for row in rows:
+                    print(row)
+    finally:
+        conn.close()
+
+
+if __name__ == "__main__":
+    main()
