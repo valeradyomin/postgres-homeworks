@@ -48,4 +48,4 @@ SELECT country
 FROM suppliers
 EXCEPT
 SELECT country
-FROM employees;HW
+FROM employees;
