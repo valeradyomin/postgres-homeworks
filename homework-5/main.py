@@ -8,7 +8,7 @@ from config import config
 def main():
     script_file = 'fill_db.sql'
     json_file = 'suppliers.json'
-    db_name = 'my_new_db'
+    db_name = 'homework5'
 
     params = config()
     conn = None
@@ -42,11 +42,26 @@ def main():
 
 def create_database(params, db_name) -> None:
     """Создает новую базу данных."""
-    pass
+    conn = psycopg2.connect(dbname="postgres", **params)
+    conn.autocommit = True
+    cur = conn.cursor()
+
+    cur.execute("SELECT datname FROM pg_catalog.pg_database WHERE datname = %s", (db_name,))
+    exist = cur.fetchone()
+
+    if exist:
+        cur.execute(f"DROP DATABASE {db_name}")
+
+    cur.execute(f"CREATE DATABASE {db_name}")
+    conn.close()
+
 
 def execute_sql_script(cur, script_file) -> None:
     """Выполняет скрипт из файла для заполнения БД данными."""
-
+    with open(script_file, 'r', encoding='UTF-8') as file:
+        sql_file = file.read()
+        cur.execute(sql_file)
+        # cur.close()
 
 
 def create_suppliers_table(cur) -> None:
