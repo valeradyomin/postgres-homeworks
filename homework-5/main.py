@@ -66,12 +66,25 @@ def execute_sql_script(cur, script_file) -> None:
 
 def create_suppliers_table(cur) -> None:
     """Создает таблицу suppliers."""
-    pass
+    with cur:
+        cur.execute("CREATE TABLE IF NOT EXISTS suppliers ("
+                    "supplier_id SERIAL PRIMARY KEY,"
+                    "company_name VARCHAR(100),"
+                    "contact VARCHAR(100),"
+                    "address VARCHAR(100),"
+                    "phone VARCHAR(30),"
+                    "fax VARCHAR(30),"
+                    "homepage VARCHAR(50),"
+                    "products TEXT"
+                    ");")
+        cur.close()
 
 
 def get_suppliers_data(json_file: str) -> list[dict]:
     """Извлекает данные о поставщиках из JSON-файла и возвращает список словарей с соответствующей информацией."""
-    pass
+    with open(json_file, "rt", encoding="UTF-8") as file:
+        data_json = json.load(file)
+        return data_json
 
 
 def insert_suppliers_data(cur, suppliers: list[dict]) -> None:
